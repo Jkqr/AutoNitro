@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Discord;
 using Discord.Gateway;
@@ -13,13 +15,14 @@ namespace AutoNitro
         public static int successes;
         public static string username;
         public static double balance;
+        public static int messages;
         
         public static DiscordSocketClient Client { get; private set; }
 
         static void Main(string[] args)
         {
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
 
             Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
 
@@ -43,33 +46,22 @@ namespace AutoNitro
 
         private static void Client_OnMessageReceived(DiscordSocketClient client, MessageEventArgs args)
         {
+	        messages++;
+	        
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
 
             string nitroMessage = args.Message.Content;
-            if ((nitroMessage.Contains("discord.gift/") && nitroMessage.Replace("https://discord.gift/", "").Length == 16) ||
-                (nitroMessage.Contains("discordapp.com/gifts/") &&
-                 nitroMessage.Replace("https://discordapp.com/gifts/", "").Length == 24) ||
-                nitroMessage.Contains("discordapp.com/gifts/") || nitroMessage.Contains("discord.gift/"))
+            Regex regex = new Regex(@"[^\s]+iscord.gift/[^\s]+|[^\s]+iscordapp.com/gifts/[^\s]+");
+            MatchCollection nitroCodeMatches = regex.Matches(nitroMessage);
+            for (int i = 0; i < nitroCodeMatches.Count; i++)
             {
-                string nitroCode;
-                if (nitroMessage.Replace("https://discord.gift/", "").Length == 16)
-                {
-                    nitroCode = nitroMessage.Replace("https://discord.gift/", "");
-                }
-                else if (nitroMessage.Replace("discord.gift/", "").Length == 16)
-                {
-                    nitroCode = nitroMessage.Replace("discord.gift/", "");
-                }
-                else if (nitroMessage.Replace("discordapp.com/gifts/", "").Length == 24)
-                {
-                    nitroCode = nitroMessage.Replace("discordapp.com/gifts/", "");
-                }
-                else
-                {
-                    nitroCode = nitroMessage.Replace("https://discordapp.com/gifts/", "");
-                }
-                
+	            string nitroCode = nitroCodeMatches[i].ToString();
+	            
+	            nitroCode = nitroCode.Replace("https://discord.gift/", "");
+	            nitroCode = nitroCode.Replace("https://discordapp.com/gifts/", "");
+	            nitroCode = nitroCode.Replace("discord.gift/", "");
+	            nitroCode = nitroCode.Replace("discordapp.com/gifts/", "");
                 try
                 {
                     Client.RedeemNitroGift(nitroCode, args.Message.ChannelId);
@@ -92,7 +84,7 @@ namespace AutoNitro
 						successes++;
 						balance += 4.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
 					}
 					else if (planName.Contains("Classic") && planName.Contains("Yearly"))
 					{
@@ -112,7 +104,7 @@ namespace AutoNitro
 						attempts++;
 						balance += 49.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
 					}
 					else if (planName == "Nitro Yearly")
 					{
@@ -132,7 +124,7 @@ namespace AutoNitro
 						successes++;
 						balance += 99.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
 					}
 					else if (planName.Contains("Quarterly"))
 					{
@@ -152,7 +144,7 @@ namespace AutoNitro
 						successes++;
 						balance += 29.97;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
 					}
 					else
 					{
@@ -172,7 +164,7 @@ namespace AutoNitro
 						successes++;
 						balance += 9.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
 					}
                 }
                 catch (DiscordHttpException ex)
@@ -193,7 +185,7 @@ namespace AutoNitro
 
                 attempts++;
                 Console.Title =
-	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";
+	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
             }
         }
 
@@ -201,7 +193,7 @@ namespace AutoNitro
         {
             username = args.User.Username;
             Console.Title =
-	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Time: {DateTime.Now.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")}";
+	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
 
             Console.WriteLine($"[SUCCESS] Logged into {username}!");
         }
