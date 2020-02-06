@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace AutoNitro
 {
@@ -6,5 +6,8 @@ namespace AutoNitro
     {
         [JsonProperty("auth_token")]
         public string Token { get; set; }
+        
+        [JsonProperty("giveaway_reaction_percentage_chance")]
+        public int GiveAwayReactChance { get; set; }
     }
 }
