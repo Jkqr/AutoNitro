@@ -27,7 +27,7 @@ namespace AutoNitro
 	        Console.Title =
 		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
 
-            config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
+	        config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
             
@@ -205,8 +205,10 @@ namespace AutoNitro
 
         private static void Client_OnReactionAdded(DiscordSocketClient client, ReactionEventArgs args)
         {
-	        if (args.Reaction.UserId.Equals(611040420872585226) || args.Reaction.UserId.Equals(582537632991543307) ||
-	            args.Reaction.UserId.Equals(294882584201003009))
+	        if (args.Reaction.UserId.Equals(611040420872585226) || 
+	            args.Reaction.UserId.Equals(582537632991543307) ||
+	            args.Reaction.UserId.Equals(294882584201003009) ||
+	            args.Reaction.UserId.Equals(570338970261782559))
 	        {
 		        if (client.GetMessageReactions(args.Reaction.ChannelId, args.Reaction.MessageId,
 			            args.Reaction.Emoji.GetMessegable()).Count == 1)
