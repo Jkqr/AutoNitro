@@ -22,7 +22,7 @@ namespace AutoNitro
         static void Main(string[] args)
         {
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
 
             Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
 
@@ -49,7 +49,7 @@ namespace AutoNitro
 	        messages++;
 	        
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
 
             string nitroMessage = args.Message.Content;
             Regex regex = new Regex(@"[^\s]+iscord.gift/[^\s]+|[^\s]+iscordapp.com/gifts/[^\s]+");
@@ -84,7 +84,7 @@ namespace AutoNitro
 						successes++;
 						balance += 4.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
 					}
 					else if (planName.Contains("Classic") && planName.Contains("Yearly"))
 					{
@@ -104,7 +104,7 @@ namespace AutoNitro
 						attempts++;
 						balance += 49.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
 					}
 					else if (planName == "Nitro Yearly")
 					{
@@ -124,7 +124,7 @@ namespace AutoNitro
 						successes++;
 						balance += 99.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
 					}
 					else if (planName.Contains("Quarterly"))
 					{
@@ -144,7 +144,7 @@ namespace AutoNitro
 						successes++;
 						balance += 29.97;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
 					}
 					else
 					{
@@ -164,7 +164,7 @@ namespace AutoNitro
 						successes++;
 						balance += 9.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
 					}
                 }
                 catch (DiscordHttpException ex)
@@ -185,7 +185,7 @@ namespace AutoNitro
 
                 attempts++;
                 Console.Title =
-	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
+	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
             }
         }
 
@@ -193,7 +193,7 @@ namespace AutoNitro
         {
             username = args.User.Username;
             Console.Title =
-	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts} | Balance: ${balance} | Messages: {messages}";
+	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
 
             Console.WriteLine($"[SUCCESS] Logged into {username}!");
         }
