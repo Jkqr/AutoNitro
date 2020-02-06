@@ -16,15 +16,18 @@ namespace AutoNitro
         public static string username;
         public static double balance;
         public static int messages;
+        public static Config config;
+        public static int giveawaysParticipated;
+        public static int giveawaysTotal;
         
         public static DiscordSocketClient Client { get; private set; }
 
         static void Main(string[] args)
         {
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
 
-            Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
+            config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("Config.json"));
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
             
@@ -39,6 +42,7 @@ namespace AutoNitro
             Client = new DiscordSocketClient();
             Client.OnLoggedIn += Client_OnLoggedIn;
             Client.OnMessageReceived += Client_OnMessageReceived;
+            Client.OnMessageReactionAdded += Client_OnReactionAdded;
             Client.Login(config.Token);
             
             Thread.Sleep(-1);
@@ -49,7 +53,7 @@ namespace AutoNitro
 	        messages++;
 	        
 	        Console.Title =
-		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
+		        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
 
             string nitroMessage = args.Message.Content;
             Regex regex = new Regex(@"[^\s]+iscord.gift/[^\s]+|[^\s]+iscordapp.com/gifts/[^\s]+");
@@ -84,7 +88,7 @@ namespace AutoNitro
 						successes++;
 						balance += 4.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";;
 					}
 					else if (planName.Contains("Classic") && planName.Contains("Yearly"))
 					{
@@ -104,7 +108,7 @@ namespace AutoNitro
 						attempts++;
 						balance += 49.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";;
 					}
 					else if (planName == "Nitro Yearly")
 					{
@@ -124,7 +128,7 @@ namespace AutoNitro
 						successes++;
 						balance += 99.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";;
 					}
 					else if (planName.Contains("Quarterly"))
 					{
@@ -144,7 +148,7 @@ namespace AutoNitro
 						successes++;
 						balance += 29.97;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";;
 					}
 					else
 					{
@@ -164,7 +168,7 @@ namespace AutoNitro
 						successes++;
 						balance += 9.99;
 						Console.Title =
-							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";;
+							$"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";;
 					}
                 }
                 catch (DiscordHttpException ex)
@@ -185,7 +189,7 @@ namespace AutoNitro
 
                 attempts++;
                 Console.Title =
-	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
+	                $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
             }
         }
 
@@ -193,9 +197,42 @@ namespace AutoNitro
         {
             username = args.User.Username;
             Console.Title =
-	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance}";
+	            $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
 
             Console.WriteLine($"[SUCCESS] Logged into {username}!");
+            Console.WriteLine($"[CONFIG] Giveaway React Chance: {config.GiveAwayReactChance}%");
+        }
+
+        private static void Client_OnReactionAdded(DiscordSocketClient client, ReactionEventArgs args)
+        {
+	        if (args.Reaction.UserId.Equals(611040420872585226) || args.Reaction.UserId.Equals(582537632991543307) ||
+	            args.Reaction.UserId.Equals(294882584201003009))
+	        {
+		        if (client.GetMessageReactions(args.Reaction.ChannelId, args.Reaction.MessageId,
+			            args.Reaction.Emoji.GetMessegable()).Count == 1)
+		        {
+			        giveawaysTotal++;
+			        if (new Random().Next(1, 100) <= config.GiveAwayReactChance)
+			        {
+				        client.AddMessageReaction(args.Reaction.ChannelId, args.Reaction.MessageId,
+					        args.Reaction.Emoji.GetMessegable());
+				        giveawaysParticipated++;
+				        Console.WriteLine(
+					        $"[Drops/GIVEAWAYS] Participated in https://discordapp.com/channels/{args.Reaction.GuildId}/{args.Reaction.ChannelId}/{args.Reaction.MessageId}");
+				        Console.Title =
+					        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
+
+			        }
+			        else
+			        {
+				        Console.WriteLine(
+					        $"[Drops/GIVEAWAYS] Did not participate in https://discordapp.com/channels/{args.Reaction.GuildId}/{args.Reaction.ChannelId}/{args.Reaction.MessageId} due to reaction chance. (Roll was ");
+				        Console.Title =
+					        $"AutoNitro - By iLinked | Account: {username} | Hits: {successes}/{attempts}/{messages} | Balance: ${balance} | Drops/Giveaways Participated: {giveawaysParticipated}/{giveawaysTotal}";
+
+			        }
+		        }
+	        }
         }
     }
 }
